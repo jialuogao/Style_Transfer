@@ -8,16 +8,16 @@ from PIL import Image
 import numpy as np
 import tensorflow as tf
 
-content_image = scipy.misc.imread("img/persian_cat.jpg")
-
-IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS = content_image.shape;
     # COLOR_CHANNELS = 3
 NOISE_RATIO = 0.6
 MEANS = np.array([123.68, 116.779, 103.939]).reshape((1,1,1,3)) 
-VGG_MODEL = 'pretrained-model/imagenet-vgg-verydeep-19.mat' # Pick the VGG 19-layer model by from the paper "Very Deep Convolutional Networks for Large-Scale Image Recognition".
-STYLE_IMAGE = 'images/stone_style.jpg' # Style image to use.
-CONTENT_IMAGE = 'images/content300.jpg' # Content image to use.
+VGG_MODEL = 'pretrained-model/imagenet-vgg-verydeep-19.mat' # Vgg 19 model is used for transfer learning
+STYLE_IMAGE = 'img/hokusai.jpg' # Style image to use.
+CONTENT_IMAGE = 'img/rocky.jpg' # Content image to use.
 OUTPUT_DIR = 'output/'
+
+content_image = scipy.misc.imread(CONTENT_IMAGE)
+IMAGE_HEIGHT, IMAGE_WIDTH, COLOR_CHANNELS = content_image.shape;
     
 def load_vgg_model(path):
     """
@@ -306,13 +306,13 @@ sess = tf.InteractiveSession()
 
 content_image = reshape_and_normalize_image(content_image)
 
-style_image = scipy.misc.imread("img/starry_night.jpg")
+style_image = scipy.misc.imread(STYLE_IMAGE)
 style_image = scipy.misc.imresize(style_image, (IMAGE_HEIGHT, IMAGE_WIDTH))
 style_image = reshape_and_normalize_image(style_image)
 
 generated_image = generate_noise_image(content_image)
 
-model = load_vgg_model("pretrained-model/imagenet-vgg-verydeep-19.mat")
+model = load_vgg_model(VGG_MODEL)
 
 sess.run(model['input'].assign(content_image))
 out = model['conv4_2']
@@ -338,7 +338,7 @@ def model_nn(sess, input_image, num_iterations = 400):
         generated_image = sess.run(model['input'])
 
         # Print every 20 iteration.
-        # if i%20 == 0:
+        if i%20 == 0:
         #     Jt, Jc, Js = sess.run([J, J_content, J_style])
         #     print("Iteration " + str(i) + " :")
         #     print("total cost = " + str(Jt))
@@ -346,7 +346,7 @@ def model_nn(sess, input_image, num_iterations = 400):
         #     print("style cost = " + str(Js))
             
             # save current generated image in the "/output" directory
-            # save_image("output/" + str(i) + ".png", generated_image)
+            save_image("output/" + str(i) + ".png", generated_image)
     
     save_image('output/generated_image.jpg', generated_image)
     
