@@ -1,10 +1,11 @@
 clc
 close all
 clear
-img = imread('1.jpg');
+img = imread('../img/7.jpg');
+style_img = imread('../output/generated_image.jpg');
 img = double(img);
 img = imresize(img, 500/size(img,1));
-figure;imshow(uint8(img));
+style_img = imresize(style_img, 500/size(style_img,1));
 
 [m, n, o] = size(img);
 k = 2;
@@ -30,7 +31,7 @@ lable2 = [];
 while 1
     iter = iter +1;
     if mode(iter,100) == 0
-        iter 
+        iter; 
     end
     dist1 = sum((im - c1).^2,2);
     dist2 = sum((im - c2).^2,2);
@@ -44,11 +45,23 @@ while 1
     c1 = mean1;
     c2 = mean2;
 end
-im1 = im(:,1:3);
+im1 = ones(size(im(:,1:3)));
+size(im1)
 im1(lable1,:) = 0;
-im2 = im(:,1:3);
+im2 = ones(size(im(:,1:3)));
 im2(lable2,:) = 0;
 im1 = uint8(reshape(im1,size(img)));
 im2 = uint8(reshape(im2,size(img)));
-figure; imshow(im1);
-figure; imshow(im2);
+% figure; imshow(im1*255);
+% figure; imshow(im2);
+
+figure; imshow(uint8(img));
+while 1
+    try 
+        temp = int32(ginput(1));
+    catch
+        break;
+    end
+    index = uint8(sum(im1(temp(2), temp(1),:)) == 0)
+    imshow((1-index)*im1.*style_img + (1-index)*im2.*uint8(img) + index*im1.*uint8(img) + index*im2.*style_img);
+end
