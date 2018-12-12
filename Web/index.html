@@ -264,11 +264,11 @@
   	});
 	$(".nav").mouseenter(function(){
   		if($(".nav").attr("opacity") != 1){
-  			$(".nav").fadeTo(200, 1);
+  			$(".nav").fadeTo(300, 1);
   		}
   	});
   	$(".nav").mouseleave(function(){
-  		$(".nav").fadeTo(200, Math.max(1 - $(window).scrollTop() / 250, 0) + 0.03);
+  		$(".nav").fadeTo(300, Math.max(1 - $(window).scrollTop() / 250, 0) + 0.03);
   	});
   	$(".nav").click(function(){
   		$("html, body").animate({ scrollTop: 0 }, "slow");
