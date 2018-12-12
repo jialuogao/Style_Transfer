@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+	<link rel="stylesheet" type="text/css" href="bootstrap-social.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<title>Partial Style Transformation</title>
+</head>
+<body>
+	<div class="nav">
+		<h1 class="text_center">CS534 Final Project: Partial Image Style Transfer</h1>
+	</div>
+	<div class="container">
+		<div class="page">
+			<div class="row offset wide">
+				<div class="col-md-offset-2 col-md-8">
+					<h3 class="row">
+						<span class="col-md-12">University of Wisconsin-Madison CS534 Computational Photography</span>
+					</h3>
+					<h4 class="row">
+						<span class="col-md-3">Jialuo Gao</span> 
+						<span class="col-md-5"><span class="bold">Email:</span> jgao223@wisc.edu</span> 
+						<span class="col-md-4"><span class="bold">NetId:</span> jgao223</span>
+					</h4>
+					<h4 class="row">
+						<span class="col-md-3">Suyan Qu</span> 
+						<span class="col-md-5"><span class="bold">Email:</span> squ27@wisc.edu</span> 
+						<span class="col-md-4"><span class="bold">NetId:</span> squ27</span>
+					</h4>
+					<h4 class="row">
+						<span class="col-md-3">Kai Wang</span> 
+						<span class="col-md-5"><span class="bold">Email:</span> kwang339@wisc.edu</span> 
+						<span class="col-md-4"><span class="bold">NetId:</span> kwang339</span>
+					</h4>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-4 col-md-offset-1">
+					<div class="row">
+						<img class="image" src="./img/fishman_styled_1.jpg"/>
+					</div>
+					<div class="row">
+						<img class="image" src="./img/shanghai_styled_0.jpg"/>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<h3 class="top">Motivation:</h3>
+					<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For long, the style and the content of a picture are considered as two distinct aspects. People associate the content of an image with the objects captured in the image and the style with the way the image presents its content. Despite that, style and content are two integrated parts of an image and it is hard to separate them. Yet thanks to modern technology, now we are not only capable of separating style and content, but also applying the style of one image to the content of another, making it possible to see a painting of spacecraft “by Van Gogh”. Style transferring can in a sense generate new images that never existed in the world and create more art pieces. Practically, the style transfer can be applied as filters in image processing on camera or smart devices which helps to make pictures to look novel and fancy.</p>
+					<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Moreover, It can potentially help artists to do some of the tedious work so that they can focus more on creating shocking artworks, which is significant as artists generally do not have a steady income and fewer and fewer people are willing to sacrifice for art. As a result, the advancement of modern art has come to a pause, and no artists as well-known as Pablo Picasso have appeared after his death. If we can motivate the limited number of artists in the world, we can accelerate the advancement of modern art and potentially evoke a new era of “Renaissance” as creating art pieces become less time-consuming. Also, style-transfer technology can potentially help us bring back styles from those long lost great artists of our rase; those styles that have been gone for long such as Vincent van Gogh, Leonardo da Vinci, and so forth.</p>
+					<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;However, simply applying existing styles to a content image may restrict modern artists’ creativity. Also to add more flexibility and artisticness of the resultant image, it is more desirable sometimes to be able to apply the style on, instead of the whole image, only part of the image, such as the background.</p>
+				</div>
+			</div>
+			<div class="row">
+				<p class="col-md-offset-1 col-md-10">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The purpose of this project is to implement a style transferring algorithm that can apply the style of one image to a part of the content of another, then merge the style-transferred image with the original content image. We have accomplished this by training a pre-trained vgg19 model and our theories are based on the work by Gatys et al (2015) then apply a modified k means algorithm to do image segmentation.</p>
+			</div>
+			<hr>
+			<div class="row">
+				<h3 class="top col-md-offset-1 col-md-10">
+					Current State of Art:
+				</h3>
+				<p class="col-md-offset-1 col-md-10">
+					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
+				</p>
+				<p></p>
+			</div>
+			<hr>
+			<div class="row">
+				<h3 class="top col-md-offset-1 col-md-10">
+					Approch:
+				</h3>
+				<p class="col-md-offset-1 col-md-10">
+					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
+				</p>
+				<p></p>
+			</div>
+			<hr>
+			<div class="row">
+				<h3 class="top col-md-offset-1 col-md-10">
+					Approch:
+				</h3>
+				<p class="col-md-offset-1 col-md-10">
+					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
+				</p>
+				<p></p>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-offset-1 col-md-6">
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/CVKYaI30mfw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+				<h3 class="top col-md-offset-1">
+					Approch:
+				</h3>
+				<p class="col-md-offset-1">
+					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+				</p>
+				<p class="col-md-offset-1">
+					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
+				</p>
+				<p></p>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-offset-1 col-md-10">
+					<div class="row">
+						<h3 class="col-md-2">
+							Reference:
+						</h3>
+						<div class="col-md-8">
+							<p class="row">Leon A. Gatys, Alexander S. Ecker, Matthias Bethge, (2015). A Neural Algorithm of Artistic Style
+								</br>
+								<a class="" href="https://arxiv.org/abs/1508.06576">https://arxiv.org/abs/1508.06576</a>
+							</p>
+							<p class="row">Log0, TensorFlow Implementation of "A Neural Algorithm of Artistic Style".
+								</br>
+								<a class="" href="http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style">http://www.chioka.in/tensorflow-implementation-neural-algorithm-of-artistic-style</a>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-offset-1 col-md-10 text_center"><h2>Check Out Our Works!</h2></div>
+				<div class="col-md-offset-1 col-md-10 row">
+					<div class="col-md-6">
+						<a href="https://github.com/squ27/Style_Transfer" class="primary-button btn btn-block btn-github">
+							<span class="button-icon fab fa-github"></span>Github Repository
+						</a>
+					</div>
+					<div class="col-md-6">
+						<a href="https://docs.google.com/presentation/d/1TYpq_qxnjOgKYRyiR7J6i5xrJ2qlStmHVXqrL5lgZ6g/edit?usp=sharing" class="primary-button btn btn-block btn-google">
+							<span class="button-icon fab fa-google-drive"></span>Google Drive Presentation
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer class="main-footer">
+    	<p>© 2018 Jialuo Gao, Suyan Qu, Kai Wang | All Rights Reserved</p>
+	</footer>
+</body>
+</html>
+
+<style type="text/css">
+	a {
+		margin: 0;
+		padding: 0;
+	}
+	.top {
+		margin-top: 0;
+		padding-top: 0;
+	}
+	hr {
+		border-color: #CDCDCD;
+	}
+	.offset {
+		margin-top: 100px;
+	}
+	body {
+		margin: 0;
+		padding: 0;
+		background-color: #EEEEEE;
+	}
+	.wide {
+		width: 100%
+	}
+	.center {
+		margin: auto;
+	}
+	.text_center {
+		text-align: center;
+	}
+	.nav {
+		display: block;
+		margin: 0;
+		padding: 0;
+		min-height: 100px;
+		height: 10%;
+		width: 100%;
+		position: fixed;
+		background-color: white;
+		z-index: 999;
+		cursor: pointer;
+	}
+	.nav:hover {
+		opacity: 1;
+	}
+	.page {
+		height: 100%;
+		min-height: 600px;
+		margin-bottom: 130px;
+	}
+	.container {
+		width: 85%;
+		min-width: 500px;
+		margin: auto;
+		background-color: #FCFCFC;
+	}
+	h1 {
+		font-size: 3.0em;
+	}
+	h2 {
+		font-size: 2.5em;
+		margin: 30px;
+	}
+	h3 {
+		font-size: 1.7em;
+		margin: 10px;
+	}
+	h4 {
+		font-size: 1.2em;
+	}
+	p {
+		font-size: 15px;
+	}
+	.bold {
+		font-weight: bold;
+	}
+	.text-red {
+		color: red;
+	}
+	.image {
+		width: 100%;
+		margin-top: 5px;
+	}
+	.primary-button {
+		font-size: 1.5em;
+	}
+	.button-icon {
+		margin: 10px;
+	}
+	.main-footer {
+	  	border: 2px solid #d7d7d7;
+	  	background: #e7e7e7;
+	  	color: #757575;
+	  	font-size: 12px;
+	  	text-align: center;
+	  	padding: 40px 0;
+	  	position: relative;
+	  	margin-top: -3em;
+	  	width: 100%;
+	}
+</style>
+
+<script type="text/javascript">
+	$(window).scroll(function(){
+		var opa = Math.max(1 - $(window).scrollTop() / 250, 0) + 0.03;
+		if($(".nav").attr("opacity") != opa){
+  			$(".nav").css("opacity", opa);
+  		}
+  	});
+	$(".nav").mouseenter(function(){
+  		if($(".nav").attr("opacity") != 1){
+  			$(".nav").fadeTo(200, 1);
+  		}
+  	});
+  	$(".nav").mouseleave(function(){
+  		$(".nav").fadeTo(200, Math.max(1 - $(window).scrollTop() / 250, 0) + 0.03);
+  	});
+  	$(".nav").click(function(){
+  		$("html, body").animate({ scrollTop: 0 }, "slow");
+  	});
+
+</script>
