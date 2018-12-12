@@ -1,8 +1,8 @@
 clc
 close all
 clear
-img = imread('../img/persian_cat.jpg');
-style_img = imread('../output/Persian Cat + Hokusai.jpg');
+img = imread('../img/8.png');
+style_img = imread('../output/shanghai_styled_0.jpg');
 img = double(img);
 img = imresize(img, 500/size(img,1));
 style_img = imresize(style_img, 500/size(style_img,1));
@@ -68,5 +68,8 @@ while 1
         break;
     end
     index = uint8(sum(im1(temp(2), temp(1),:)) == 0);
-    imshow((1-index)*im1.*style_img + (1-index)*im2.*uint8(img) + index*im1.*uint8(img) + index*im2.*style_img);
+    finalim = (1-index)*im1.*style_img + (1-index)*im2.*uint8(img) + index*im1.*uint8(img) + index*im2.*style_img;
+    imshow(finalim);
+%     fileName = "final"+index+".jpg"
+%     imwrite(uint8(finalim), char(fileName));
 end
