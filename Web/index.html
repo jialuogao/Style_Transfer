@@ -5,9 +5,21 @@
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
 	<link rel="stylesheet" type="text/css" href="bootstrap-social.css">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
 	<title>Partial Style Transformation</title>
 </head>
-<body>
+<body id="top-page">
+	<div id="menu_btn" onclick="openNav()"><span class="glyphicon glyphicon-chevron-right"></span></div>
+	<div id="mySidenav" class="sidenav">
+	  <a href="#top-page" class="glyphicon glyphicon-menu-up upbtn"></a>
+	  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+	  <a href="#motivation">Motivation</a>
+	  <a href="#state-of-art">Current State of Art</a>
+	  <a href="#approach">Approach</a>
+	  <a href="#result">Result</a>
+	  <a href="#evaluation">Evaluation and Future Improvement</a>
+	  <a href="#reference">Reference</a>
+	</div>
 	<div class="nav">
 		<h1 class="text_center">CS534 Final Project: Partial Image Style Transfer</h1>
 	</div>
@@ -36,7 +48,7 @@
 				</div>
 			</div>
 			<hr>
-			<div class="row">
+			<div class="row" id = "motivation">
 				<div class="col-md-4 col-md-offset-1">
 					<div class="row">
 						<img class="image" src="./img/fishman_styled_1.jpg"/>
@@ -56,62 +68,133 @@
 				<p class="col-md-offset-1 col-md-10">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The purpose of this project is to implement a style transferring algorithm that can apply the style of one image to a part of the content of another, then merge the style-transferred image with the original content image. We have accomplished this by training a pre-trained vgg19 model and our theories are based on the work by Gatys et al (2015) then apply a modified k means algorithm to do image segmentation.</p>
 			</div>
 			<hr>
-			<div class="row">
+			<div class="row" id="state-of-art">
 				<h3 class="top col-md-offset-1 col-md-10">
 					Current State of Art:
 				</h3>
 				<p class="col-md-offset-1 col-md-10">
-					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creating the best art, we need to use some of the most advanced technology to do so. Currently, few techniques can generate a partially style-transferred image directly, but both style transfer and image segmentation are well implemented. The current state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
 				</p>
 				<p class="col-md-offset-1 col-md-10">
-					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The current state-of-art for image segmentation is more comprehensive. While traditional image processing algorithms like k-mean and mean shift is effective approaches, neural networks are also used to generate a more precise result. Some latest image segmentation neural network algorithms can recognize a small strand of hair as a part of a person. Although such such high accuracy is desirable, running such a neural network algorithm can also be very costly. Instead, we choose k means for an efficient image segmentation. 
+
 				</p>
-				<p></p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task, and then use k means to generate a partially style-transferred image. As technology develops, style transferring and image segmentation using deep learning has become more and more powerful; as those algorithms produce desirable results, they also got more and more complicated, costly, and harder to implement as well. As a result, we decided to re-implement some relatively more straightforward and existed solutions to start with. 
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;During the process, we have encountered several problems. For style transfer, since none of us had much experience with deep learning previously, we needed to learn some more powerful tools such as TensorFlow. However, once we understood how to use TensorFlow, the transfer learning algorithm was easy to implement. For image segmentation, we encountered more problems. We first rank means using only the RGB value of each pixel as its features, but the result was not quite desirable since discontinuous areas of similar colors were categorized as the same segment. To prevent that, the coordinates of each pixel were also added to its feature vector. Yet this brought some new issues as the algorithm tended to segment the image by its diagonal. To fix that, we further added how blurry that portion of the image was, which implied how close the object was to the camera, to our feature vector. See below for more details on our approaches.  
+				</p>
 			</div>
 			<hr>
-			<div class="row">
+			<div class="row" id="approach">
 				<h3 class="top col-md-offset-1 col-md-10">
 					Approch:
 				</h3>
+				<h4 class="top col-md-offset-1 col-md-10">
+					Style Transfer: 
+				</h4>
 				<p class="col-md-offset-1 col-md-10">
-					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Before transferring the style, we are planning on doing preprocessing to both content and style image to amplify the style on the style image and remove the style from the content image to help our model to reach the best result.
 				</p>
 				<p class="col-md-offset-1 col-md-10">
-					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Afterward, we can implement the style transfer algorithm. To do this, we use the pre-trained Matlab built-in model vgg19. The model is trained by minimizing a cost function defined below:
 				</p>
-				<p></p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The cost function \(J\) is composed of 2 parts: \(J_{content}\), representing how much of the content in the input content image is preserved, and \(J_{style}\), representing how similar the style of the output is to the input style image. To compute Jcontent, the content image is first put into the model before training starts, and the output of a hidden layer (conv4_2), \(a^{(C)}\), composed of \(m\) 3D arrays of size \(n_{H} \times n_{W} \times n_{C}\) , is retrieved. During the training stage, the result of the same layer, \(a^{(G)}\) is also retrieved. Then \(J_{content}\) is calculated by averaging the square difference of every entry: 
+				</p>
+				<p class="col-md-offset-1 col-md-10 equation">
+					$$J_{content}={1 \over 4 \times m \times n_C \times n_W \times n_H} \sum_{all \text{ } entries}{(a^{(C)}-a^{(G)})^2} $$
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Similarly, the style image is also passed into the model. Yet here, the output of multiple convolution layers are extracted to compute the final style cost. At each layer, \(a^{(C)}\), still composed of \(m\) 3D arrays of size \(n_H \times n_W \times n_C\), is retrieved. Yet before calculating the square difference between each entry, each 3D array is unrolled so that it becomes a 2D matrix of \((n_H \times n_W) \times n_C\). The Gram Matrix, representing the correlation between filters, is then calculated by calculating the outer product of the unrolled matrix: 
+				</p>
+				<p class="col-md-offset-1 col-md-10 equation">
+					$$G^{(C)} = A \cdot A^T$$
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Where A is the unrolled matrix and G(C)is the Gram Matrix of the output of the given layer of the style image. During the training stage, the Gram Matrix of the given layer’s output G(G)is calculated. Then the square difference of each entry is calculated and normalized to get the cost of the current layer.  
+				</p>
+				<p class="col-md-offset-1 col-md-10 equation">
+					$$J_{style}^{[l]}={1 \over 4 \times n_C^2 \times (n_W \times n_H)^2} \sum{(G^{(C)}-G^{(G)})^2} $$
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Then the weighted average of all selected layers is calculated. This weighted average is our file style cost. 
+				</p>
+				<p class="col-md-offset-1 col-md-10 equation">
+					$$J_{style}=\sum_l{\lambda^{[l]}J_{style}^{[l]}} $$
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Finally, the total cost would be the weighted sum of the style cost and content cost calculated above:
+				</p>
+				<p class="col-md-offset-1 col-md-10 equation">
+					$$J=\alpha \cdot J_{content} + \beta \cdot J_{style}$$
+				</p>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Use this cost function as the cost function of the vgg19 model, a model for style transfer can be trained through transfer learning by minimizing the cost function using gradient descent. A low cost means that the generated image preserves not only the content of the content image but also visually similar to our style image (rather than the content because Gram Matrix is used and the cost function therefore only cares about the correlation rather than the content itself). The result usually converges after around 240 iterations. Below are some samples generated by the algorithm above: 
+				</p>
+				<div class="col-md-offset-1 col-md-3">
+					<div class="row">
+						<img class="image" src="./img/persian_cat_sn.jpg"/>
+					</div>
+					<div class="row">
+						<p class="caption">Persian Cat Styled by Starry Night</p>
+					</div>
+				</div>
+				<div class="offset_sp col-md-3">
+					<div class="row">
+						<img class="image" src="./img/persian_cat_h.jpg"/>
+					</div>
+					<div class="row">
+						<p class="caption">Persian Cat Styled by Hokusai</p>
+					</div>
+				</div>
+				<div class="offset_sp col-md-3">
+					<div class="row">
+						<img class="image" src="./img/persian_cat_ts.jpg"/>
+					</div>
+					<div class="row">
+						<p class="caption">Persian Cat Styled by The Scream</p>
+					</div>
+				</div>
+
+				<h4 class="top col-md-offset-1 col-md-10">
+					Image Segmentation: 
+				</h4>
+				<p class="col-md-offset-1 col-md-10"></p>
+
+				<h4 class="top col-md-offset-1 col-md-10">
+					Integration: 
+				</h4>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Once we generated the style-transferred image and had the original image segmented, we can build a user interface where user can click anywhere on the original image and the part of image clicked will receive a new style while the rest of the image remains the same. This user interface simply takes the coordination of the mouse clicking event, determines which segment of the image is clicked, and then generate an image similar to the original one exception the segment clicked is replaced by the same segment from the style-transferred image. The generated image will then be displayed in the UI. 
+				</p>
 			</div>
+			
 			<hr>
-			<div class="row">
+			<div class="row" id="result">
 				<h3 class="top col-md-offset-1 col-md-10">
-					Approch:
+					Result: 
 				</h3>
 				<p class="col-md-offset-1 col-md-10">
-					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Here is a video demonstration of our final product: 
 				</p>
-				<p class="col-md-offset-1 col-md-10">
-					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
-				</p>
-				<p></p>
-			</div>
-			<hr>
-			<div class="row">
-				<div class="col-md-offset-1 col-md-6">
+				<div class="col-md-offset-1 col-md-10">
 					<iframe width="560" height="315" src="https://www.youtube.com/embed/CVKYaI30mfw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 				</div>
-				<h3 class="top col-md-offset-1">
-					Approch:
-				</h3>
-				<p class="col-md-offset-1">
-					Creating the best art, we need to use some of the most advanced technology to do so. Currently, the state-of-the-art for style transfer is neural networks(especially convolutional neural network) with deep learning. Those methods are very commonly used when doing style transfer due to its powerful ability in deconstructing images. However, one downside is that deep learning requires a large amount of training data and computational resources to train the model from scratch. Due to the lack of training data, we decided to use a pre-trained model vgg19 to aid us. 
-				</p>
-				<p class="col-md-offset-1">
-					We are going to re-implement an existing solution created by Gatys et al (2015) to do the style transfer task. As technology develops, style transfers using deep learning has become more and more powerful; as those algorithms perfect, they also got more and more complicated as well. As a result, we decided to re-implement a relatively more straightforward and existed solution to start with. 
-				</p>
-				<p></p>
 			</div>
 			<hr>
-			<div class="row">
+			<div class="row" id="evaluation">
+				<h3 class="top col-md-offset-1 col-md-10">
+					Evaluation and Future Improvements:
+				</h3>
+				<p class="col-md-offset-1 col-md-10">
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Our current approach provides a fairly artistic result, but it is far from perfect and has a lot of restrictions and flaws. For style-transferring, our approach needs to re-train the VGG19 model everytime we choose a different style image or content image. This can be very inefficient. In addition, due to the way the cost function is defined, our model cannot distort any lines or shapes of the content image to match the style of style image better. These can be resolved by using some more comprehensive style transfer models. Another limitation posed by this model is that it requires the content image and style image to have the same size. We tried to solve this issue using image quilting, but image quilting requires the style image to be more consistent so that all small segments of the image would be visually similar to each other. Some other solutions to this include photomontage or use more comprehensive models. As for image segmentation, k = 2 is currently used for simplicity, but an image can usually be cut into much more segments and several different regions. Consequently, various segments will be cut into the same region. This can be resolved by increasing the value of k or using other image segmentation algorithms such as the mean shift algorithm. Another problem with our current image segmentation algorithm is that it is not very accurate, especially on images with low contrast and images with a relatively uniform density map. This can also be resolved by implementing some more comprehensive image segmentation algorithms. 
+
+				</p>
+			</div>
+			<hr>
+			<div class="row" id="reference">
 				<div class="col-md-offset-1 col-md-10">
 					<div class="row">
 						<h3 class="col-md-2">
@@ -167,7 +250,7 @@
 		border-color: #CDCDCD;
 	}
 	.offset {
-		margin-top: 100px;
+		margin-top: 120px;
 	}
 	body {
 		margin: 0;
@@ -192,8 +275,7 @@
 		width: 100%;
 		position: fixed;
 		background-color: white;
-		z-index: 999;
-		cursor: pointer;
+		z-index: 99;
 	}
 	.nav:hover {
 		opacity: 1;
@@ -219,6 +301,7 @@
 	h3 {
 		font-size: 1.7em;
 		margin: 10px;
+		font-weight: bold;
 	}
 	h4 {
 		font-size: 1.2em;
@@ -253,6 +336,77 @@
 	  	margin-top: -3em;
 	  	width: 100%;
 	}
+	.equation{
+		text-align: center;
+	}
+	.caption{
+		text-align: center;
+		font-style: italic;
+	}
+	.offset_sp{
+		margin-left: 4%
+	}
+	.sidenav {
+	  height: 100%;
+	  width: 0;
+	  position: fixed;
+	  z-index: 999;
+	  top: 0;
+	  left: 0;
+	  background-color: #111;
+	  overflow-x: hidden;
+	  transition: 0.5s;
+	  padding-top: 60px;
+	}
+
+	.sidenav a {
+	  padding: 8px 8px 8px 32px;
+	  text-decoration: none;
+	  color: #818181;
+	  display: block;
+	  transition: 0.3s;
+	}
+
+	.sidenav a:hover {
+	  color: #f1f1f1;
+	}
+
+	.sidenav .closebtn {
+	  position: absolute;
+	  top: 0;
+	  right: 25px;
+	  font-size: 36px;
+	  padding: 0;
+	}
+
+	.sidenav .upbtn{
+		position: absolute;
+		top: 15px;
+		right: 60px;
+		font-size: 23px;
+	  	padding: 0;
+	}
+
+	@media screen and (max-height: 450px) {
+	  .sidenav {padding-top: 15px;}
+	  .sidenav a {font-size: 18px;}
+	}
+
+	#menu_btn{
+		position: fixed;
+		z-index: 99;
+		top:20%;
+		left: 2%;
+		background-color: #ffffff;
+		border-radius: 3px;
+		width: 35px;
+		height: 35px;
+		cursor: pointer;
+	}
+
+	#menu_btn span{
+		margin: 30%;
+	}
 </style>
 
 <script type="text/javascript">
@@ -270,8 +424,52 @@
   	$(".nav").mouseleave(function(){
   		$(".nav").fadeTo(300, Math.max(1 - $(window).scrollTop() / 250, 0) + 0.03);
   	});
-  	$(".nav").click(function(){
-  		$("html, body").animate({ scrollTop: 0 }, "slow");
-  	});
+  	// $(".nav").click(function(){
+  	// 	$("html, body").animate({ scrollTop: 0 }, "slow");
+  	// });
+	function openNav() {
+	  document.getElementById("mySidenav").style.width = "250px";
+	}
 
+	function closeNav() {
+	  document.getElementById("mySidenav").style.width = "0";
+	}
+
+	// Select all links with hashes
+	$('a[href*="#"]')
+	  // Remove links that don't actually link to anything
+	  .not('[href="#"]')
+	  .not('[href="#0"]')
+	  .click(function(event) {
+	    // On-page links
+	    if (
+	      location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
+	      && 
+	      location.hostname == this.hostname
+	    ) {
+	      // Figure out element to scroll to
+	      var target = $(this.hash);
+	      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+	      // Does a scroll target exist?
+	      if (target.length) {
+	        // Only prevent default if animation is actually gonna happen
+	        event.preventDefault();
+	        $('html, body').animate({
+	          scrollTop: target.offset().top
+	        }, 300, function() {
+	          // Callback after animation
+	          // Must change focus!
+	          // var $target = $(target);
+	          // $target.focus();
+	          // if ($target.is(":focus")) { // Checking if the target was focused
+	          //   return false;
+	          // } else {
+	          //   // $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+	          //   $target.focus(); // Set focus again
+	          // };
+	        });
+	      }
+	    }
+	    closeNav();
+	  });
 </script>
