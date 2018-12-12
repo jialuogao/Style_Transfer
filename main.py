@@ -12,8 +12,8 @@ import tensorflow as tf
 NOISE_RATIO = 0.6
 MEANS = np.array([123.68, 116.779, 103.939]).reshape((1,1,1,3)) 
 VGG_MODEL = 'pretrained-model/imagenet-vgg-verydeep-19.mat' # Vgg 19 model is used for transfer learning
-STYLE_IMAGE = 'img/hokusai.jpg' # Style image to use.
-CONTENT_IMAGE = 'img/7.jpg' # Content image to use.
+STYLE_IMAGE = 'img/starry_night.jpg' # Style image to use.
+CONTENT_IMAGE = 'img/city1.jpg' # Content image to use.
 OUTPUT_DIR = 'output/'
 
 content_image = scipy.misc.imread(CONTENT_IMAGE)
@@ -323,7 +323,7 @@ J_content = compute_content_cost(a_C, a_G)
 sess.run(model['input'].assign(style_image))
 J_style = compute_style_cost(model, STYLE_LAYERS)
 
-J = total_cost(J_content, J_style, alpha = 10, beta = 40)
+J = total_cost(J_content, J_style, alpha = 40, beta = 10)
 
 optimizer = tf.train.AdamOptimizer(2.0)
 train_step = optimizer.minimize(J)

@@ -1,7 +1,7 @@
 clc
 close all
 clear
-img = imread('../img/7.jpg');
+img = imread('../img/persian_cat.jpg');
 style_img = imread('../output/generated_image.jpg');
 img = double(img);
 img = imresize(img, 500/size(img,1));
@@ -13,7 +13,7 @@ densitymap = double(generateDensityMap(img, 40));
 [m, n, ~] = size(img);
 k = 2;
 locationscale = 1.2;
-wd = 1.4;
+wd = 1.45;
 
 wx = locationscale * 255/n;
 wy = locationscale * 255/m;
