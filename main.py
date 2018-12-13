@@ -7,8 +7,8 @@ import tensorflow as tf
 NOISE_RATIO = 0.6
 MEANS = np.array([123.68, 116.779, 103.939]).reshape((1,1,1,3)) 
 VGG_MODEL = 'pretrained-model/imagenet-vgg-verydeep-19.mat' # Vgg 19 model is used for transfer learning
-STYLE_IMAGE = 'img/the-scream.jpg' # Style image to use.
-CONTENT_IMAGE = 'img/persian_cat.jpg' # Content image to use.
+STYLE_IMAGE = 'img/hokusai.jpg' # Style image to use.
+CONTENT_IMAGE = 'img/7.jpg' # Content image to use.
 OUTPUT_DIR = 'output/'
 
 content_image = scipy.misc.imread(CONTENT_IMAGE)

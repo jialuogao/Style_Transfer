@@ -1,8 +1,11 @@
 clc
 close all
 clear
-img = imread('../img/8.png');
-style_img = imread('../output/shanghai_styled_0.jpg');
+
+fileName = '../img/7.jpg';
+
+img = imread(fileName);
+style_img = imread('../output/generated_image.jpg');
 img = double(img);
 img = imresize(img, 500/size(img,1));
 style_img = imresize(style_img, 500/size(style_img,1));
