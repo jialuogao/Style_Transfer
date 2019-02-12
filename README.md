@@ -1,5 +1,5 @@
 # Partial Style Transfer
-A partial style transfer algorithm for CS 534 at UW-Madison semester project. It is accomplished by training a style transfer model using TensorFlow based on two images, then running an image segmentation algorithm. Then the program can blend the original image with the style-transferred image on user's demand. Click [here](https://jialuogao.github.io/) to learn more.
+A partial style transfer algorithm for CS 534 at UW-Madison semester project. It is accomplished by training a style transfer model using TensorFlow based on two images, then running an image segmentation algorithm. Then the program can blend the original image with the style-transferred image on user's demand. Click [here](https://kaiwang66.github.io/) to learn more.
 
 ## Usage
 To run this algorithm, you need to have TensorFlow for Python downloaded on your computer. It also requires a pre-trained vgg19 model. Once you have downloaded the code in this repository, please download the [model](https://uwprod-my.sharepoint.com/:u:/g/personal/squ27_wisc_edu/EXMeJDYhgotHqijdKTEFETUB5Dle1zXp8lbaDxKTQ_l5Lw?e=dQYsGu) and put it under a folder named "pre-trained model" in the same directory as main.py.
